@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width">
+		<link href="stylesheet.css" rel="stylesheet" type="text/css">
+		<link href="roboto.css" rel="stylesheet" type="text/css">
+		<link href="roboto-mono.css" rel="stylesheet" type="text/css">
+		<title>PCTMA-Net: Point Cloud Transformer with Morphing Atlas-based Point Generation Network for Dense Point Cloud Completion</title>
+	</head>
+	<body>
+		<p align="center">2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)</p>
+		<h1>PCTMA-Net: Point Cloud Transformer with Morphing Atlas-based Point Generation Network for Dense Point Cloud Completion</h1>
+		<p align="center">Jianjie Lin, Markus Rickert, Alexander Perzylo, Alois Knoll<br/>Robotics, Artificial Intelligence and Real-time Systems<br/>Department of Informatics, Technical University of Munich</p>
+		<p align="center"><a class="chip" href="https://doi.org/10.1109/IROS51168.2021.9636483">DOI</a> <a class="chip" href="https://mediatum.ub.tum.de/doc/1621481/1621481.pdf">Preprint</a>
+		 <a class="chip" href="reference.bib">BibTeX</a> <a class="chip" href="https://github.com/LinJianjie/PCTMA_Net">Code</a></p>
+		<h2>Abstract</h2>
+		<p>Inferring a complete 3D geometry given an incomplete point cloud is essential in many vision and robotics applications. Previous work mainly relies on a global feature extracted by a Multi-layer Perceptron (MLP) for predicting the shape geometry. This suffers from a loss of structural details, as its point generator fails to capture the detailed topology and structure of point clouds using only the global features.The irregular nature of point clouds makes this task more challenging. This paper presents a novel method for shape completion to address this problem. The Transformer structure is currently a standard approach for natural language processing tasks and its inherent nature of permutation invariance makes it well suited for learning point clouds. Furthermore, the Transformer's attention mechanism can effectively capture the local context within a point cloud and efficiently exploit its incomplete local structure details. A morphing-atlas-based point generation network further fully utilizes the extracted point Transformer feature to predict the missing region using charts defined on the shape. Shape completion is achieved via the concatenation of all predicting charts on the surface. Extensive experiments on the Completion3D and KITTI data sets demonstrate that the proposed PCTMA-Net outperforms the state-of-the-art shape completion approaches and has a 10% relative improvement over the next best-performing method.</p>
+		<h2>Qualitative comparison on Completion3D</h2>
+		<p>We compare our proposed shape completion algorithm PCTMA-Net with other state-of-the-art approaches on two large scale data sets: Completion3D and KITTI. The Chamfer distance is employed as a metric in the evaluation.</p>
+		<p>Completion3D from ShapeNet offers a data set, which consists of 28974 training samples and 800 point cloud evaluation samples with a point resolution of 2048 for training and validation, respectively. The qualitative visualization of completion results shown in the figure below indicates that our approach is able to predict more details. The performance in the quantitative and qualitative evaluations proves the Transformer encoder and the morphing-atlas decoder's effectiveness for predicting and preserving the shape details.</p>
+		<canvas id="c"></canvas>
+		<div class="scroll">
+			<figure>
+				<div id="content"></div>
+				<figcaption>Completion results on the Completion3D evaluation set.</figcaption>
+			</figure>
+		</div>
+		<p>Point completion results on Completion3D with ground truth and input resolution (2048 points) are compared using the Chamfer distance (CD) with L<sup>2</sup> norm. The results in the table below are multiplied by 10<sup>4</sup>. In our algorithm (PCTMA-Net), we set meshgrid=0.05. The best result is highlighted in bold, and a lower value is better.</p>
+		<div class="scroll">
+			<table>
+				<tr>
+					<th>Methods</th>
+					<th>Airplane</th>
+					<th>Cabinet</th>
+					<th>Car</th>
+					<th>Chair</th>
+					<th>Lamp</th>
+					<th>Sofa</th>
+					<th>Table</th>
+					<th>Watercraft</th>
+					<th>Overall</th>
+				</tr>
+				<tr>
+					<td>AtlasNet (N<sub>out</sub>=2048)</td>
+					<td align="right">5.82</td>
+					<td align="right">29.28</td>
+					<td align="right">11.02</td>
+					<td align="right">27.11</td>
+					<td align="right">34.04</td>
+					<td align="right">19.11</td>
+					<td align="right">29.27</td>
+					<td align="right">15.55</td>
+					<td align="right">21.40</td>
+				</tr>
+				<tr>
+					<td>AtlasNet (N<sub>out</sub>=16384)</td>
+					<td align="right"> 5.50</td>
+					<td align="right"> 19.89</td>
+					<td align="right"> 9.23</td>
+					<td align="right"> 21.17</td>
+					<td align="right"> 30.99</td>
+					<td align="right"> 15.34</td>
+					<td align="right"> 21.67</td>
+					<td align="right"> 14.64</td>
+					<td align="right"> 17.31</td>
+				</tr>
+				<tr>
+					<td>FoldNet</td>
+					<td align="right"> 12.83</td>
+					<td align="right"> 23.01</td>
+					<td align="right"> 14.88</td>
+					<td align="right"> 25.69</td>
+					<td align="right"> 21.79</td>
+					<td align="right"> 21.31</td>
+					<td align="right"> 20.71</td>
+					<td align="right"> 11.51</td>
+					<td align="right"> 19.07</td>
+				</tr>
+				<tr>
+					<td>FCN</td>
+					<td align="right">9.79</td>
+					<td align="right">22.70</td>
+					<td align="right">12.43</td>
+					<td align="right">25.14</td>
+					<td align="right">22.72</td>
+					<td align="right">20.26</td>
+					<td align="right">20.27</td>
+					<td align="right">11.73</td>
+					<td align="right">18.22</td>
+				</tr>
+				<tr>
+					<td>TopNet (N<sub>out</sub>=16384)</td>
+					<td align="right"> 5.85</td>
+					<td align="right"> 21.27</td>
+					<td align="right"> 10.03</td>
+					<td align="right"> 20.09</td>
+					<td align="right"> 22.98</td>
+					<td align="right"> 14.65</td>
+					<td align="right"> 24.25</td>
+					<td align="right"> 11.78</td>
+					<td align="right"> 16.36</td>
+				</tr>
+				<tr>
+					<td>PointNetFCAE (N<sub>out</sub>=2048)</td>
+					<td align="right">5.81</td>
+					<td align="right">21.14</td>
+					<td align="right">8.95</td>
+					<td align="right">22.01</td>
+					<td align="right">33.36</td>
+					<td align="right">15.81</td>
+					<td align="right">27.52</td>
+					<td align="right">14.09</td>
+					<td align="right">18.59</td>
+				</tr>
+				<tr>
+					<td>PointNetFCAE (N<sub>out</sub>=16384)</td>
+					<td align="right">4.00</td>
+					<td align="right">16.70</td>
+					<td align="right">6.24</td>
+					<td align="right">14.63</td>
+					<td align="right">18.15</td>
+					<td align="right">10.99</td>
+					<td align="right">15.77</td>
+					<td align="right">8.55</td>
+					<td align="right">11.88</td>
+				</tr>
+				<tr>
+					<td>SA-Net</td>
+					<td align="right">5.27</td>
+					<td align="right">14.45</td>
+					<td align="right">7.78</td>
+					<td align="right">13.67</td>
+					<td align="right">13.53</td>
+					<td align="right">14.22</td>
+					<td align="right">11.75</td>
+					<td align="right">8.84</td>
+					<td align="right">11.22</td>
+				</tr>
+				<tr>
+					<td>GRNet (N<sub>out</sub>=2048)</td>
+					<td align="right">7.64</td>
+					<td align="right">24.06</td>
+					<td align="right">12.02</td>
+					<td align="right">24.62</td>
+					<td align="right">28.73</td>
+					<td align="right">18.85</td>
+					<td align="right">32.90</td>
+					<td align="right">12.48</td>
+					<td align="right">20.16</td>
+				</tr>
+				<tr>
+					<td>GRNet (N<sub>out</sub>=16384)</td>
+					<td align="right">3.79</td>
+					<td align="right">14.86</td>
+					<td align="right">6.71</td>
+					<td align="right">12.74</td>
+					<td align="right">13.73</td>
+					<td align="right">11.05</td>
+					<td align="right">15.43</td>
+					<td align="right"><strong>6.50</strong></td>
+					<td align="right">10.60</td>
+				</tr>
+				<tr>
+					<td>PCTMA-Net (n<sub>chart</sub>=32, N<sub>out</sub>=2048)</td>
+					<td align="right">3.60</td>
+					<td align="right">14.67</td>
+					<td align="right">7.03</td>
+					<td align="right">14.04</td>
+					<td align="right">20.61</td>
+					<td align="right">10.66</td>
+					<td align="right">18.01</td>
+					<td align="right">7.62</td>
+					<td align="right">12.03</td>
+				</tr>
+				<tr>
+					<td>PCTMA-Net (n<sub>chart</sub>=128, N<sub>out</sub>=10240)</td>
+					<td align="right"><strong>3.16</strong></td>
+					<td align="right">13.53</td>
+					<td align="right">6.58</td>
+					<td align="right">13.21</td>
+					<td align="right">12.93</td>
+					<td align="right">10.29</td>
+					<td align="right">14.25</td>
+					<td align="right">6.98</td>
+					<td align="right">10.11</td>
+				</tr>
+				<tr>
+					<td>PCTMA-Net (n<sub>chart</sub>=32, N<sub>out</sub>=16152)</td>
+					<td align="right">3.38</td>
+					<td align="right"><strong>3.00</strong></td>
+					<td align="right"><strong>6.11</strong></td>
+					<td align="right"><strong>12.72</strong></td>
+					<td align="right"><strong>11.87</strong></td>
+					<td align="right"><strong>9.18</strong></td>
+					<td align="right"><strong>12.43</strong></td>
+					<td align="right">7.17</td>
+					<td align="right"><strong>9.48</strong></td>
+				</tr>
+			</table>
+		</div>
+		<h2>Reference</h2>
+		<p>For more detailed information please have a look at our IROS paper. The reference is</p>
+		<p>Jianjie Lin, Markus Rickert, Alexander Perzylo, Alois Knoll. <a href="https://mediatum.ub.tum.de/doc/1621481/1621481.pdf">PCTMA-Net: Point Cloud Transformer with Morphing Atlas-based Point Generation Network for Dense Point Cloud Completion</a>, In <i>Proceedings of the IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)</i>, pages 5657-5663, Prague, Czech Republic, September 2021.</p>
+		<pre><code>@InProceedings{linpctma2021,
+  author    = {Jianjie Lin and Markus Rickert and Alexander Perzylo and Alois Knoll},
+  booktitle = {Proceedings of the IEEE/RSJ International Conference on Intelligent Robots and Systems},
+  title     = {{PCTMA}-{N}et: Point Cloud Transformer with Morphing Atlas-based Point Generation Network for Dense Point Cloud Completion},
+  year      = {2021},
+  month     = sep,
+  pages     = {5657--5663},
+  address   = {Prague, Czech Republic},
+  doi       = {10.1109/IROS51168.2021.9636483},
+}</code></pre>
+		<script type="module" src="index.js"></script>
+	</body>
+</html>
